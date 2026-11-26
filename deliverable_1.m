@@ -53,5 +53,5 @@ qdd = [xddot; phiddot];
 M   = simplify(jacobian(EoM, qdd));    % mass matrix
 rhs = simplify(-(EoM - M*qdd));        % M*qdd = rhs
 
-%% Solving the EoM's with ode45
-
+%% Generating the MATLAB function from EoM's for use in Simulink
+matlabFunction(M,rhs,'File','EOM_Function');
