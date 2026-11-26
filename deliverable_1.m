@@ -1,15 +1,15 @@
 clear; clc;
 
-%% Parameters (symbolic, no values)
+%% Parameters (parametric, no values)
 syms m_b m_c m_h J_h2 L23 phi_h3 g real
 syms k_y k_phi k_PD d_x d_phi d_PD real
 syms y_ref phi_ref x_PDref real
 
 %% Coordinates, velocities, and accelerations
-syms x phi y real            % x, phi: generalized coordinates, y: prescribed
+syms x phi y real                % x, phi: generalized coordinates, y: prescribed
 syms xdot phidot ydot real       % first derivatives
 syms xddot phiddot yddot real    % second derivatives
-syms M_phi real              % actuator moment (input)
+syms M_phi real                  % actuator moment (input)
 
 q    = [x; phi];
 qd   = [xdot; phidot];
@@ -48,7 +48,7 @@ EoM     = simplify(EoM_lhs - f_np);    % = 0
 disp('Equation 1 (x):');   pretty(EoM(1))
 disp('Equation 2 (phi):'); pretty(EoM(2))
 
-%% Optional: mass matrix and rest, M(q)*qdd = f(q, qd, ...)
+%% Optional mass matrix and rest, M(q)*qdd = f(q, qd, ...)
 qdd = [xddot; phiddot];
 M   = simplify(jacobian(EoM, qdd));    % mass matrix
 rhs = simplify(-(EoM - M*qdd));        % M*qdd = rhs
