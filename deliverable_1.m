@@ -52,3 +52,6 @@ disp('Equation 2 (phi):'); pretty(EoM(2))
 qdd = [xddot; phiddot];
 M   = simplify(jacobian(EoM, qdd));    % mass matrix
 rhs = simplify(-(EoM - M*qdd));        % M*qdd = rhs
+
+%% Solving the EoM's with ode45
+
