@@ -52,3 +52,62 @@ disp('Equation 2 (phi):'); pretty(EoM(2))
 qdd = [xddot; phiddot];
 M   = simplify(jacobian(EoM, qdd));    % mass matrix
 rhs = simplify(-(EoM - M*qdd));        % M*qdd = rhs
+
+%% Generating the MATLAB function from EoM's for use in Simulink
+matlabFunction(M,rhs,'File','EOM_Function');
+
+%% Open simulink file and set model parameters
+
+sys = 'Dynamics_CNC';
+load_system([sys,'.slx'])
+
+set_param(sys,'StopTime','20')      %Set stop time
+set_param(sys,'Solver','ode4')      %Set solver as Runge-Kutta
+set_param(sys,'FixedStep','1e-3')   %Set time step as 1 ms
+
+%% Run Simulation and save results
+
+results = sim('Dynamics_CNC.slx');
+
+if ~isempty(results.ErrorMessage)
+    error('Simulation failed')
+end
+
+%% Load measured data (for question g)
+
+S = load('MeasuredSignals-1.mat');
+MeasuredSignals = S.MeasuredSignals;
+
+%% Plot the results
+
+figure(1)
+
+plot(results.tout,results.q_x,'b','LineWidth',1.5)
+hold on
+plot(MeasuredSignals.t,MeasuredSignals.x,'r','LineWidth',1.5)
+
+grid on
+
+xlim([0 20])
+ylim([-0.04 0.841])
+
+xlabel('Time [sec]')
+ylabel('x [m]')
+title('Position of Carriage')
+legend('Simulation','Measurement')
+
+figure(2)
+
+plot(results.tout,results.q_phi,'b','LineWidth',1.5)
+hold on
+plot(MeasuredSignals.t,MeasuredSignals.varphi,'r','LineWidth',1.5)
+
+grid on
+
+xlim([0 20])
+ylim([-4.22 0.669])
+
+xlabel('Time [sec]')
+ylabel('\phi [rad]')
+title('Absolute Angle of Milling Head')
+legend('Simulation','Measurement')
